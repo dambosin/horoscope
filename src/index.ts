@@ -1,6 +1,6 @@
 import {config} from 'dotenv';
 import {Bot} from './bot';
-import {Logger} from './logger/logger';
+import {Logger} from './logger/Logger';
 
 config();
 
