@@ -5,10 +5,12 @@
   "devDependencies": {
     "@types/node": "^20.12.7",
     "gts": "^5.3.1",
+    "nodemon": "^3.1.10",
     "typescript": "^5.4.3"
   },
   "scripts": {
     "start": "npx ts-node src/index.ts",
+    "dev": "nodemon --exec ts-node src/index.ts",
     "lint": "gts lint",
     "clean": "gts clean",
     "compile": "tsc",

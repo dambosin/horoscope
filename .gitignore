@@ -3,3 +3,4 @@ node_modules/
 .editorconfig
 start-hidden.vbs
 start.bat
+.vscode/

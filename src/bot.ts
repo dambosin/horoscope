@@ -4,12 +4,15 @@ import {
   Message,
   Update,
 } from 'telegraf/typings/core/types/typegram';
+import {ILogger} from './logger/ILogger';
 
 const days = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
 
 export class Bot {
   private readonly _telegraph: Telegraf;
-  constructor(token: string) {
+  private readonly _logger: ILogger;
+  constructor(token: string, logger: ILogger) {
+    this._logger = logger;
     this._telegraph = new Telegraf(token);
     this._telegraph.on('inline_query', async ctx => {
       const date = new Date();
@@ -38,7 +41,9 @@ export class Bot {
       await ctx.answerInlineQuery(result, {cache_time: 0});
     });
     this._telegraph.on('message', async ctx => {
-      console.log('message');
+      this._logger.info(
+        `Recieved direct message from: ${ctx.from.username}\nMessage: '${ctx.text}`
+      );
       if (ctx.text === 'test') {
         await this.test(ctx);
       }
@@ -94,8 +99,6 @@ export class Bot {
         (hashCode << 6) +
         (hashCode << 16) -
         hashCode;
-      // console.log('Added', currentValue);
-      // console.log(hashCode);
       return hashCode;
     }, 0);
   };
