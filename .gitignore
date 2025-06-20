@@ -5,3 +5,4 @@ start-hidden.vbs
 start.bat
 .vscode/
 logs/*
+build/
