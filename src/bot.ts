@@ -41,9 +41,8 @@ export class Bot {
       await ctx.answerInlineQuery(result, {cache_time: 0});
     });
     this._telegraph.on('message', async ctx => {
-      this._logger.info(
-        `Recieved direct message from: ${ctx.from.username}\nMessage: '${ctx.text}`
-      );
+      this._logger.info(`Recieved direct message from: '${ctx.from.username}'`);
+      this._logger.info(`Message: '${ctx.text}'`);
       if (ctx.text === 'test') {
         await this.test(ctx);
       }
