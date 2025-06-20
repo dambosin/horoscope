@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {ILogger} from './ILogger';
 
 export class Logger implements ILogger {
