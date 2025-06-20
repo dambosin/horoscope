@@ -16,9 +16,9 @@ Inject a logger (such as a Pino instance) into the `Logger` class:
 
 ```typescript
 import pino from 'pino';
-import { Logger } from './logger/Logger';
+import {Logger} from './logger/Logger';
 
-const pinoLogger = pino({ level: 'info' });
+const pinoLogger = pino({level: 'info'});
 const logger = new Logger(pinoLogger);
 
 logger.info('This is an info message');

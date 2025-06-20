@@ -9,6 +9,10 @@ A Telegram bot built with Node.js, TypeScript, and a modular logger system.
 - Environment variable support via `.env`
 - Graceful shutdown handling
 
+## Why Pino?
+
+Pino was chosen as the logger implementation for this project because of its high performance and excellent support for pretty, human-readable output to the console during development (using `pino-pretty`). This makes it easy to debug and monitor the application in real time, while still supporting structured logging and file output for production environments.
+
 ## Getting Started
 
 ### Prerequisites
@@ -35,9 +39,25 @@ BOT_TOKEN=your-telegram-bot-token
 ```sh
 npm run dev
 ```
+
 or (if using nodemon)
+
 ```sh
 npx nodemon --exec ts-node src/index.ts
+```
+
+### Running Tests
+
+To run all tests:
+
+```sh
+npx jest
+```
+
+Or, if you have a test script in package.json:
+
+```sh
+npm test
 ```
 
 ### Logging
