@@ -1,27 +1,12 @@
 import {config} from 'dotenv';
 import {Bot} from './bot';
 import {Logger} from './logger/Logger';
-import pino from 'pino';
 
 config();
-const logLevel = process.env.LOG_LEVEL || 'info';
+// const logLevel = process.env.LOG_LEVEL || 'info';
 const token = process.env.BOT_TOKEN;
 
-const pinoLogger = pino({
-  level: 'info',
-  transport: {
-    targets: [
-      {target: 'pino-pretty', level: logLevel},
-      {
-        target: 'pino/file',
-        options: {destination: 'logs/app.log', mkdir: true, interval: '1d'},
-        level: 'info',
-      },
-    ],
-  },
-});
-
-const logger = new Logger(pinoLogger);
+const logger = new Logger();
 
 try {
   if (!token) {
