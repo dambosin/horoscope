@@ -18,9 +18,6 @@
     "clean": "gts clean",
     "build": "tsc",
     "fix": "gts fix",
-    "prepare": "npm.cmd run compile",
-    "pretest": "npm.cmd run compile",
-    "posttest": "npm.cmd run lint",
     "test": "jest"
   },
   "dependencies": {
