@@ -6,8 +6,6 @@ import {
 } from 'telegraf/typings/core/types/typegram';
 import {ILogger} from './logger/ILogger';
 
-const days = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
-
 export class Bot {
   private readonly _telegraph: Telegraf;
   private readonly _logger: ILogger;
@@ -18,11 +16,9 @@ export class Bot {
     this._logger = logger;
     this._telegraph = new Telegraf(token);
     this._telegraph.on('inline_query', async ctx => {
-      const date = new Date();
-      const dateString = `${date.getUTCFullYear()}-${date.getUTCMonth()}-${date.getUTCDate()}`;
-      const size = this.getCockSize(
-        ctx?.inlineQuery?.from?.username ?? '',
-        dateString
+      const username = ctx.inlineQuery.from.username;
+      const size = this.getCockSizeFromString(
+        username + this.getUniqueDayIdentifier(new Date())
       );
       const result: InlineQueryResult[] = [
         {
@@ -41,12 +37,15 @@ export class Bot {
           thumbnail_height: 100,
         },
       ];
+      console.log(`User ${username} requested mesurments and got ${size}cm`);
       await ctx.answerInlineQuery(result, {cache_time: 0});
     });
     this._telegraph.on('message', async ctx => {
-      this._logger.info(`Recieved direct message from: '${ctx.from.username}'`);
-      this._logger.info(`Message: '${ctx.text}'`);
-      if (ctx.text === 'test') {
+      const username = ctx.from.username;
+      const text = ctx.text;
+      this._logger.info(`Recieved direct message from: '${username}'`);
+      this._logger.info(`Message: '${text}'`);
+      if (username === 'dambosin' && text?.startsWith('test')) {
         await this.test(ctx);
       }
     });
@@ -55,17 +54,35 @@ export class Bot {
   private async test(
     ctx: NarrowedContext<Context<Update>, Update.MessageUpdate<Message>>
   ) {
-    const names = ['NikeA_1337', 'Svizhen', 'dambosin'];
-    for (const name of names) {
-      let sum = 0;
-      for (let month = 0; month < 12; month++) {
-        for (let day = 0; day < days[month]; day++) {
-          const datestr = `2024-${month < 10 ? '0' + month : month}-${day < 10 ? '0' + day : day}`;
-          sum += this.getCockSize(name, datestr);
-        }
-      }
-      await ctx.sendMessage(`${name} average is ${sum / 365}`);
+    const testUsername = ctx.text?.split(' ')?.[1] ?? '';
+    if (testUsername === '') {
+      await ctx.sendMessage('Please provide username to test');
+      await ctx.sendMessage('Example: test <username>');
+      return;
     }
+    const resultValuesCount = [...Array(40)].map(() => 0);
+    const numberOfDaysToTest = 1500;
+    for (let i = 0; i < numberOfDaysToTest; i++) {
+      const date = new Date();
+      const size = this.getCockSizeFromString(
+        testUsername +
+          this.getUniqueDayIdentifier(
+            new Date(date.getFullYear(), date.getMonth(), date.getDate() - i)
+          )
+      );
+      resultValuesCount[size]++;
+    }
+    await ctx.sendMessage(
+      resultValuesCount
+        .map(
+          (count, index) =>
+            `${index < 10 ? `0${index}` : index}: ${[...Array(count)].map(() => '-').join('')}`
+        )
+        .join('\n')
+    );
+    await ctx.sendMessage(
+      `Average value is ${resultValuesCount.reduce((sum, count, index) => sum + index * count) / numberOfDaysToTest}`
+    );
   }
 
   public run() {
@@ -76,20 +93,12 @@ export class Bot {
     this._telegraph.stop(reason);
   }
 
-  private getCockSize(login: string, prefix: string): number {
-    const initString = prefix + login;
-
-    const hash = this.sdbm(initString);
-    function addition(x: number): number {
-      let temp: number = Math.abs(x);
-      let result = 0;
-      while (temp > 0) {
-        result += temp % 10;
-        temp = Math.floor(temp / 10);
-      }
-      return result;
+  private getCockSizeFromString(value: string): number {
+    const hash = this.sdbm(value);
+    const cockSize = Math.ceil((Math.abs(hash) % 38) + 2);
+    if (cockSize < 2 || cockSize > 39) {
+      console.log(cockSize);
     }
-    const cockSize = Math.ceil((addition(hash) % 38) + 2);
     return cockSize;
   }
 
@@ -103,16 +112,6 @@ export class Bot {
         hashCode;
       return hashCode;
     }, 0);
-  };
-
-  private hashing = (str: string) => {
-    const buffer = new TextEncoder().encode(str);
-
-    let hash = 0;
-    for (const byte of buffer) {
-      hash = (hash * 31 + byte) >>> 0; // Basic hash: unsigned right shift for 32-bit unsigned integer
-    }
-    return hash;
   };
 
   private getEmoji(size: number): string {
@@ -133,5 +132,9 @@ export class Bot {
       result = '😎';
     }
     return result;
+  }
+
+  private getUniqueDayIdentifier(date: Date): string {
+    return `${date.getUTCFullYear()}-${date.getUTCMonth()}-${date.getUTCDate()}`;
   }
 }
