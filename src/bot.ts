@@ -37,7 +37,9 @@ export class Bot {
           thumbnail_height: 100,
         },
       ];
-      console.log(`User ${username} requested mesurments and got ${size}cm`);
+      this._logger.info(
+        `User ${username} requested mesurments and got ${size}cm`
+      );
       await ctx.answerInlineQuery(result, {cache_time: 0});
     });
     this._telegraph.on('message', async ctx => {
@@ -96,9 +98,6 @@ export class Bot {
   private getCockSizeFromString(value: string): number {
     const hash = this.sdbm(value);
     const cockSize = Math.ceil((Math.abs(hash) % 38) + 2);
-    if (cockSize < 2 || cockSize > 39) {
-      console.log(cockSize);
-    }
     return cockSize;
   }
 
