@@ -9,12 +9,9 @@ import {ILogger} from './logger/ILogger';
 export class Bot {
   private readonly _telegraph: Telegraf;
   private readonly _logger: ILogger;
-  constructor(token: string, logger: ILogger) {
-    if (!token) {
-      throw new Error('Bot token is required');
-    }
+  constructor(telegraf: Telegraf, logger: ILogger) {
     this._logger = logger;
-    this._telegraph = new Telegraf(token);
+    this._telegraph = telegraf;
     this._telegraph.on('inline_query', async ctx => {
       const username = ctx.inlineQuery.from.username;
       const size = this.getCockSizeFromString(
