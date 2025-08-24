@@ -1,10 +1,17 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {Telegraf} from 'telegraf';
 import {ILogger} from './ILogger';
+import {BaseLogger} from './BaseLogger';
 
-export class TelegramLogger implements ILogger {
+export class TelegramLogger extends BaseLogger {
   private readonly _telegraf: Telegraf;
   private readonly _chatId: string;
-  constructor(telegraf: Telegraf, chatId: string) {
+  constructor(
+    telegraf: Telegraf,
+    chatId: string,
+    logLevels: (keyof ILogger)[]
+  ) {
+    super(logLevels);
     this._telegraf = telegraf;
     if (!chatId) {
       throw new Error('Chat ID is not set');
@@ -12,27 +19,27 @@ export class TelegramLogger implements ILogger {
     this._chatId = chatId;
   }
 
-  private sendMessage(message: string) {
-    this._telegraf.telegram.sendMessage(this._chatId, message);
-  }
-
-  info(message?: any, ...args: any[]): void {
+  logInfo(message?: any, ...args: any[]): void {
     this.sendMessage(this.getMessage('info', message, args));
   }
-  warn(message?: any, ...args: any[]): void {
+  logWarn(message?: any, ...args: any[]): void {
     this.sendMessage(this.getMessage('warn', message, args));
   }
-  error(message?: any, ...args: any[]): void {
+  logError(message?: any, ...args: any[]): void {
     this.sendMessage(this.getMessage('error', message, args));
   }
-  debug(message?: any, ...args: any[]): void {
+  logDebug(message?: any, ...args: any[]): void {
     this.sendMessage(this.getMessage('debug', message, args));
   }
-  fatal(message?: any, ...args: any[]): void {
+  logFatal(message?: any, ...args: any[]): void {
     this.sendMessage(this.getMessage('fatal', message, args));
   }
-  trace?(message?: any, ...args: any[]): void {
+  logTrace(message?: any, ...args: any[]): void {
     this.sendMessage(this.getMessage('trace', message, args));
+  }
+
+  private sendMessage(message: string) {
+    this._telegraf.telegram.sendMessage(this._chatId, message);
   }
 
   private getMessage(
@@ -46,9 +53,5 @@ export class TelegramLogger implements ILogger {
       resultMessage += ' ' + args.toString();
     }
     return resultMessage;
-  }
-  private getMetaInfo(logType: keyof ILogger): string {
-    const date = new Date();
-    return `[${logType.toUpperCase()}] ${date.toISOString()}:`;
   }
 }
