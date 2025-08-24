@@ -4,7 +4,8 @@ import {
   Message,
   Update,
 } from 'telegraf/typings/core/types/typegram';
-import {ILogger} from './logger/ILogger';
+
+import {ILogger} from './logger';
 
 export class Bot {
   private readonly _telegraph: Telegraf;
