@@ -15,16 +15,19 @@ export class Bot {
     this._telegraph = telegraf;
     this._telegraph.on('inline_query', async ctx => {
       const username = ctx.inlineQuery.from.username;
-      const size = this.getCockSizeFromString(
-        username + this.getUniqueDayIdentifier(new Date())
-      );
+      const hashString = username + this.getUniqueDayIdentifier(new Date());
+      const size = this.getCockSizeFromString(hashString);
+      const isInside = this.getIsInside(hashString);
+      const message = isInside
+        ? `Cock size inside me is ${size}cm ${this.getEmoji(size)}`
+        : `My cock size is ${size}cm ${this.getEmoji(size)}`;
       const result: InlineQueryResult[] = [
         {
           type: 'article',
           id: 'testing',
           title: 'Measure your cock',
           input_message_content: {
-            message_text: `My cock size is ${size}cm ${this.getEmoji(size)}`,
+            message_text: message,
           },
           hide_url: true,
           description:
@@ -36,7 +39,7 @@ export class Bot {
         },
       ];
       this._logger.info(
-        `User ${username} requested mesurments and got ${size}cm`
+        `User ${username} requested mesurments and got ${size}cm${isInside ? 'inside' : ''}`
       );
       await ctx.answerInlineQuery(result, {cache_time: 0});
     });
@@ -91,6 +94,13 @@ export class Bot {
 
   public stop(reason?: string) {
     this._telegraph.stop(reason);
+  }
+  private getIsInside(value: string): boolean {
+    const seed = this.cyrb128(value);
+    const rand = this.sfc32(seed[0], seed[2], seed[2], seed[3]);
+    rand();
+    const hash = rand();
+    return hash > 0.9;
   }
 
   private getCockSizeFromString(value: string): number {
