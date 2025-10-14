@@ -7,9 +7,23 @@ import {
 
 import {ILogger} from './logger';
 
+const birthdays = [
+  {
+    name: 'Svizhen',
+    month: 9,
+    day: 15,
+  },
+  {
+    name: 'NikeA_1337',
+    month: 0,
+    day: 3,
+  },
+];
 export class Bot {
   private readonly _telegraph: Telegraf;
   private readonly _logger: ILogger;
+  private sum = 0;
+  private users: string[] = [];
   constructor(telegraf: Telegraf, logger: ILogger) {
     this._logger = logger;
     this._telegraph = telegraf;
@@ -18,9 +32,29 @@ export class Bot {
       const hashString = username + this.getUniqueDayIdentifier(new Date());
       const size = this.getCockSizeFromString(hashString);
       const isInside = this.getIsInside(hashString);
-      const message = isInside
-        ? `Cock size inside me is ${size}cm ${this.getEmoji(size)}`
-        : `My cock size is ${size}cm ${this.getEmoji(size)}`;
+      const birthday = birthdays.find(
+        ({day, month}) =>
+          new Date().getDate() === day && new Date().getMonth() === month
+      );
+      if (birthday) {
+        if (username !== birthday.name && !this.users.includes(username!)) {
+          this.sum += size;
+          this.users.push(username!);
+        }
+      } else {
+        this.sum = 0;
+        this.users = [];
+      }
+
+      console.log(new Date().getDate());
+      console.log(new Date().getMonth());
+      const message = birthday
+        ? username !== birthday.name
+          ? `My cock size is ${size}cm ${this.getEmoji(size)}. And I'll stick it to ${birthday?.name} ass to celebrate its birthday`
+          : `Today i've got ${this.sum}cm inside`
+        : isInside
+          ? `Cock size inside me is ${size}cm ${this.getEmoji(size)}`
+          : `My cock size is ${size}cm ${this.getEmoji(size)}`;
       const result: InlineQueryResult[] = [
         {
           type: 'article',
