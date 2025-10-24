@@ -46,8 +46,6 @@ export class Bot {
         this.users = [];
       }
 
-      console.log(new Date().getDate());
-      console.log(new Date().getMonth());
       const message = birthday
         ? username !== birthday.name
           ? `My cock size is ${size}cm ${this.getEmoji(size)}. And I'll stick it to ${birthday?.name} ass to celebrate its birthday`
@@ -73,7 +71,7 @@ export class Bot {
         },
       ];
       this._logger.info(
-        `User ${username} requested mesurments and got ${size}cm${isInside ? 'inside' : ''}`
+        `User ${username} requested mesurments and got ${size}cm${isInside ? ' inside' : ''}`
       );
       await ctx.answerInlineQuery(result, {cache_time: 0});
     });
