@@ -8,7 +8,8 @@
         "lint": "eslint .",
         "lint:fix": "eslint . --fix",
         "format": "prettier --write \"src/**/*.ts\"",
-        "test": "echo \"Error: no test specified\" && exit 1"
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "build-prod": "echo \"before generate\" && prisma generate && echo \"before build\" && npm run build && echo \"before deploy\" && prisma migrate deploy"
     },
     "keywords": [],
     "author": "",
