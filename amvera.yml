@@ -7,7 +7,7 @@ meta:
 services:
     # --- Service 1: Your PostgreSQL Database ---
     # This defines the service. Let's call it 'my-db'
-    my-db:
+    amvera-dambosin-cnpg-horoscope-bot-db-rw:
         type: postgres
         version: 17.5
 
@@ -39,5 +39,5 @@ tasks:
                 # This tells Amvera: "Find the service named 'my-db'
                 # and inject its 'DATABASE_URL' as an environment variable
                 # into this task."
-                - service: my-db
+                - service: amvera-dambosin-cnpg-horoscope-bot-db-rw
                   variables: [DATABASE_URL]
