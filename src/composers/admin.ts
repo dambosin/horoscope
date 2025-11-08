@@ -5,10 +5,9 @@ import type {BotContext} from '../bot/type.js';
 import {logger} from '../logger.js';
 
 export const adminComposer = new Composer<BotContext>();
-adminComposer.use(adminOnly);
 
 // /set_override <userName> <date> <template>
-adminComposer.command('set_override', async ctx => {
+adminComposer.command('set_override', adminOnly, async ctx => {
     const args = ctx.message.text.split(' ').slice(1);
     const [userName, date, ...templateParts] = args;
     const template = templateParts.join(' ');
@@ -30,7 +29,7 @@ adminComposer.command('set_override', async ctx => {
 });
 
 // /set_user_default <userName> <template>
-adminComposer.command('set_user_default', async ctx => {
+adminComposer.command('set_user_default', adminOnly, async ctx => {
     const args = ctx.message.text.split(' ').slice(1);
     const [userName, ...templateParts] = args;
     const template = templateParts.join(' ');
@@ -52,7 +51,7 @@ adminComposer.command('set_user_default', async ctx => {
 });
 
 // /set_date_default <date> <template>
-adminComposer.command('set_date_default', async ctx => {
+adminComposer.command('set_date_default', adminOnly, async ctx => {
     const args = ctx.message.text.split(' ').slice(1);
     const [date, ...templateParts] = args;
     const template = templateParts.join(' ');
@@ -74,7 +73,7 @@ adminComposer.command('set_date_default', async ctx => {
 });
 
 // /list_overrides
-adminComposer.command('list_overrides', async ctx => {
+adminComposer.command('list_overrides', adminOnly, async ctx => {
     const overrides = await ctx.db.overrideRule.findMany();
 
     logger.info('All overrides were requested');
@@ -92,7 +91,7 @@ adminComposer.command('list_overrides', async ctx => {
 });
 
 // /delete_override <override_id>
-adminComposer.command('delete_override', async ctx => {
+adminComposer.command('delete_override', adminOnly, async ctx => {
     const args = ctx.message.text.split(' ').slice(1);
     const [overrideId] = args;
     await ctx.db.overrideRule.delete({
