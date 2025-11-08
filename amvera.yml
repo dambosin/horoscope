@@ -1,0 +1,26 @@
+version: null
+meta:
+    app: my-bot
+services:
+    my-bot:
+        # Tell Amvera this is a Node.js app
+        type: node
+        # How to run your (compiled) TypeScript app
+        run:
+            - npm start
+        build:
+            # Commands to build your app
+            - npm install
+            - npx prisma generate # Generate the client
+            - npm run build # This runs 'tsc'
+            - npx prisma migrate deploy # <-- See next section
+
+        # --- THIS IS THE CRITICAL PART ---
+        dependencies:
+            # Tell your bot to connect to your database service
+            - my-db
+    my-db:
+        # Tell Amvera this is a PostgreSQL database
+        type: postgres
+        # Specify the version
+        version: 17.5

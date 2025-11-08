@@ -1,0 +1,31 @@
+// This is your schema.prisma file
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL") // Reads from your .env file
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+// Your database tables
+model OverrideRule {
+  id        Int     @id @default(autoincrement())
+  template  String
+  userName    String? // ? = optional
+  date      String? // "YYYY-MM-DD"
+  
+  @@unique([userName, date])
+}
+
+model AnalyticsLog {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  userId    BigInt
+  username  String
+  rawValue    String
+  finalResult String
+  wasOverride Boolean
+  ruleIdUsed  Int?
+}
