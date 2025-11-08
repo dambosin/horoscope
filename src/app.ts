@@ -21,6 +21,7 @@ export async function main() {
 
         bot.launch();
         logger.info(`Bot started successfully (as @${bot.botInfo?.username})`);
+        console.log('App started');
 
         process.once('SIGINT', () => {
             bot.stop('SIGINT');
