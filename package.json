@@ -1,31 +1,35 @@
 {
-  "engines": {
-    "node": ">11.0.0"
-  },
-  "devDependencies": {
-    "@types/jest": "^30.0.0",
-    "@types/node": "^20.12.7",
-    "gts": "^5.3.1",
-    "jest": "^30.0.2",
-    "nodemon": "^3.1.10",
-    "ts-jest": "^29.4.0",
-    "typescript": "^5.4.3"
-  },
-  "scripts": {
-    "start": "npx ts-node src/index.ts",
-    "dev": "nodemon --exec ts-node src/index.ts",
-    "lint": "gts lint",
-    "clean": "gts clean",
-    "compile": "tsc",
-    "fix": "gts fix",
-    "prepare": "npm.cmd run compile",
-    "pretest": "npm.cmd run compile",
-    "posttest": "npm.cmd run lint",
-    "test": "jest"
-  },
-  "dependencies": {
-    "dotenv": "^16.4.5",
-    "telegraf": "^4.16.3",
-    "ts-node": "^10.9.2"
-  }
+    "name": "horoscope",
+    "version": "1.0.0",
+    "main": "index.js",
+    "scripts": {
+        "build": "tsc",
+        "start": "node dist/index.js",
+        "lint": "eslint .",
+        "lint:fix": "eslint . --fix",
+        "format": "prettier --write \"src/**/*.ts\"",
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "description": "",
+    "devDependencies": {
+        "@types/node": "^24.10.0",
+        "@typescript-eslint/eslint-plugin": "^8.46.3",
+        "@typescript-eslint/parser": "^8.46.3",
+        "eslint": "^9.39.1",
+        "eslint-config-prettier": "^10.1.8",
+        "eslint-plugin-prettier": "^5.5.4",
+        "prettier": "^3.6.2",
+        "prisma": "^6.19.0",
+        "typescript": "^5.9.3",
+        "typescript-eslint": "^8.46.3"
+    },
+    "type": "module",
+    "dependencies": {
+        "@prisma/client": "^6.19.0",
+        "pg": "^8.16.3",
+        "telegraf": "^4.16.3"
+    }
 }
