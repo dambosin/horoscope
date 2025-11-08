@@ -1,9 +1,38 @@
 {
-  "extends": "./node_modules/gts/tsconfig-google.json",
-  "compilerOptions": {
-    "rootDir": ".",
-    "outDir": "build",
-    "strict": true
-  },
-  "include": ["src/**/*.ts", "test/**/*.ts"]
+    "compilerOptions": {
+        /* Environment Settings */
+        "module": "nodenext",
+        "target": "es2022",
+
+        /* Modules */
+        "moduleResolution": "nodenext",
+
+        /* Emitting */
+        "outDir": "./dist",
+        "rootDir": "./src",
+
+        /* Strict Type-Checking Options */
+        "strict": true,
+        "noImplicitAny": true,
+        "strictNullChecks": true,
+        "strictFunctionTypes": true,
+        "strictBindCallApply": true,
+        "strictPropertyInitialization": true,
+        "noImplicitThis": true,
+        "alwaysStrict": true,
+
+        /* Additional Checks */
+        "noUnusedLocals": true,
+        "noUnusedParameters": true,
+        "noImplicitReturns": true,
+        "noFallthroughCasesInSwitch": true,
+
+        /* Module Resolution Options */
+        "esModuleInterop": true,
+
+        /* Completeness */
+        "skipLibCheck": true,
+        "forceConsistentCasingInFileNames": true
+    },
+    "include": ["src/**/*"]
 }

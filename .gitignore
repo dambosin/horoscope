@@ -6,3 +6,6 @@ start.bat
 .vscode/
 logs/*
 build/
+dist/
+
+/src/generated/prisma
