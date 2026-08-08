@@ -1,5 +1,5 @@
-import 'dotenv/config';
-
+import * as dotenv from 'dotenv';
+dotenv.config();
 const botToken = process.env.BOT_TOKEN;
 if (!botToken) {
     throw new Error('BOT_TOKEN is not set in your .env file');

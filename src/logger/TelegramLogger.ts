@@ -1,16 +1,15 @@
 import {Telegraf} from 'telegraf';
 import type {ILogger} from './ILogger.js';
 import {BaseLogger} from './BaseLogger.js';
-import type {BotContext} from '../bot/type.js';
 
 export class TelegramLogger extends BaseLogger {
-    private readonly _telegraf: Telegraf<BotContext>;
+    private readonly _telegraf: Telegraf;
     private readonly _chatId: string;
     private readonly _infoTheadId: number;
     private readonly _warningTheadId: number;
     private readonly _errorTheadId: number;
     constructor(
-        telegraf: Telegraf<BotContext>,
+        telegraf: Telegraf,
         chatId: string,
         infoTheadId: number,
         warningTheadId: number,

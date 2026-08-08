@@ -1,5 +1,4 @@
-import {PrismaClient} from '@prisma/client';
-import {logger} from '../logger.js';
+import {overrideManager} from '../overrides/OverridesManager.js';
 
 function getDefaultValue(username: string, date: string): [number, boolean] {
     const seed = cyrb128(username + date);
@@ -13,87 +12,38 @@ function getDefaultValue(username: string, date: string): [number, boolean] {
 function applyTemplate(
     template: string,
     size: number,
-    username: string
+    username: string,
+    emoji: string
 ): string {
     return template
-        .replace(/{result}/g, size.toString())
-        .replace(/{username}/g, username);
+        .replace(/{size}/g, size.toString())
+        .replace(/{username}/g, username)
+        .replace(/{emoji}/g, emoji);
 }
 
 function formaDate(date: Date): string {
     return date.toISOString().split('T')[0]; // "YYYY-MM-DD"
 }
 
-export async function generateContent(
-    prisma: PrismaClient,
-    userId: bigint,
-    username: string
-): Promise<string> {
-    const today = formaDate(new Date());
+export function generateContent(userId: number, username: string): string {
+    const todayDate = new Date();
+    const today = formaDate(todayDate);
     const [size, isInside] = getDefaultValue(username, today);
-    const defaultTemplate = `My cock size is {result}cm ${getEmoji(size)}`;
-    const defaultInsideTemplate = `Cock size inside me is {result}cm ${getEmoji(size)}`;
-    let finalResult = applyTemplate(
-        isInside ? defaultInsideTemplate : defaultTemplate,
-        size,
-        username
-    );
-    let wasOverride = false;
-    let ruleIdUsed = null;
 
-    let rule = await prisma.overrideRule.findFirst({
-        where: {userName: username, date: today},
+    const override = overrideManager.getOverride({
+        userId,
+        date: {
+            month: todayDate.getUTCMonth(),
+            day: todayDate.getUTCDate(),
+        },
     });
 
-    if (!rule) {
-        rule = await prisma.overrideRule.findFirst({
-            where: {userName: username, date: ''},
-        });
-    }
-
-    if (!rule) {
-        rule = await prisma.overrideRule.findFirst({
-            where: {userName: '', date: today},
-        });
-    }
-
-    if (rule) {
-        logger.info(`Custom rule was found: ${rule.template}`);
-        finalResult = applyTemplate(rule.template, size, username);
-        wasOverride = true;
-        ruleIdUsed = rule.id;
-    }
-
-    prisma.analyticsLog
-        .findFirst({
-            where: {userId},
-            orderBy: {createdAt: 'desc'},
-        })
-        .then(result => {
-            if (
-                !result ||
-                (!!result &&
-                    formaDate(result.createdAt) !== formaDate(new Date()))
-            ) {
-                logger.info(`Loggin analytics for ${username}`);
-                prisma.analyticsLog
-                    .create({
-                        data: {
-                            userId: userId,
-                            username: username,
-                            rawValue: size.toString(),
-                            finalResult: finalResult,
-                            wasOverride: wasOverride,
-                            ruleIdUsed: ruleIdUsed,
-                        },
-                    })
-                    .catch((err: unknown) =>
-                        logger.error('Failed to log analytics:', err)
-                    );
-            } else {
-                logger.info(`Today size already logged`);
-            }
-        });
+    const finalResult = applyTemplate(
+        isInside ? override.value.inside : override.value.regular,
+        size,
+        username,
+        getEmoji(size)
+    );
 
     return finalResult;
 }

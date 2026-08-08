@@ -2,20 +2,15 @@ import {Composer} from 'telegraf';
 
 import {generateContent} from '../services/content.js';
 import type {InlineQueryResult} from 'telegraf/types';
-import type {BotContext} from '../bot/type.js';
 import {logger} from '../logger.js';
 
-export const inlineComposer = new Composer<BotContext>();
+export const inlineComposer = new Composer();
 
 inlineComposer.on('inline_query', async ctx => {
     const user = ctx.inlineQuery.from;
     try {
         if (user.username) {
-            const content = await generateContent(
-                ctx.db,
-                BigInt(user.id),
-                user.username
-            );
+            const content = generateContent(user.id, user.username);
             logger.info(
                 `User ${user.username} requested mesurments and got: ${content}`
             );

@@ -1,9 +1,8 @@
-import {Middleware} from 'telegraf';
+import {Context, Middleware} from 'telegraf';
 import {config} from '../config.js';
-import type {BotContext} from '../bot/type.js';
 import {logger} from '../logger.js';
 
-export const adminOnly: Middleware<BotContext> = (ctx, next) => {
+export const adminOnly: Middleware<Context> = (ctx, next) => {
     if (ctx.from && ctx.from.id.toString() === config.ADMIN_ID) {
         return next();
     } else {
